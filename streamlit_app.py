@@ -2,6 +2,8 @@ import pulp
 import numpy as np
 import pandas as pd
 
+import streamlit as st
+
 
 # Target values
 ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_Freqx1 vector
@@ -139,3 +141,8 @@ print_multiple_separator_lines('#', 60, 3)
 # Print the DataFrame
 print(df)
 print_multiple_separator_lines('#', 60, 3)
+
+
+
+st.write("Optimization complete")
+
