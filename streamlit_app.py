@@ -11,9 +11,28 @@ ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_
 
 # ytarget = np.array([2482, 2472, 2444, 2375, 2358, 2336, 2310])  # N_indep_Freqx1 vector %KB161
 
-st.write("Target Frequency")
-st.write(ytarget)
+st.write("# Input TF Data")
+col1, = st.columns(1)
 
+TF1 = col1.number_input("TF1 Value", min_value=2000, value=2482)
+TF2 = col1.number_input("TF2 Value", min_value=2000, value=2466)
+TF3 = col1.number_input("TF3 Value", min_value=2000, value=2448)
+TF4 = col1.number_input("TF4 Value", min_value=2000, value=2436)
+TF5 = col1.number_input("TF5 Value", min_value=2000, value=2374)
+TF6 = col1.number_input("TF6 Value", min_value=2000, value=2356)
+TF7 = col1.number_input("TF7 Value", min_value=2000, value=2338)
+TF8 = col1.number_input("TF8 Value", min_value=2000, value=2310)
+TF9 = col1.number_input("TF9 Value", min_value=000, value=0 )
+
+st.write("## Target Frequency")
+
+ytarget = np.array([ TF1, TF2, TF3, TF4, TF5, TF6, TF7, TF8])
+labels = ["TF1", "TF2", "TF3", "TF4", "TF5", "TF6", "TF7", "TF8"]
+df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
+
+st.table(df)
+
+################################################################
 # Initial value
 # x0 = 2482
 x0 = ytarget[0]
