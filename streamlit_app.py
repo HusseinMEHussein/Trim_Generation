@@ -11,6 +11,8 @@ ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_
 
 # ytarget = np.array([2482, 2472, 2444, 2375, 2358, 2336, 2310])  # N_indep_Freqx1 vector %KB161
 
+st.write("Target Frequency")
+st.write(ytarget)
 
 # Initial value
 # x0 = 2482
