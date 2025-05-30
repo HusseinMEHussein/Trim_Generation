@@ -45,7 +45,7 @@ for i in range(1, N_Freq + 1):
     label_col, input_col = st.columns([0.2, 0.2],
                                         vertical_alignment="center",
                                             border=True) # Adjust ratio as needed
-    label_col.markdown(f"**TF{i} Value:**")
+    label_col.markdown(f"**F{i} Value:**")
 
     temp_value = input_col.number_input(
         label="",
