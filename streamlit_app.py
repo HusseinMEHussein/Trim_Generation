@@ -51,18 +51,19 @@ for i in range(1, N_Freq + 1):
         label="",
         min_value=0 ,
         value=default_TF_List[i-1],
+        # key=f"TF_input_{i}",# Unique key for each input
         label_visibility="collapsed" # hides the label space
     ) # to define many TF variables without repeating code lines
 
     TF_values.append(temp_value)
     labels.append(f"TF{i}")
 
-# st.write("## Target Frequency")
 
-# ytarget = np.array(TF_values)
-# df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
+ytarget = np.array(TF_values)
+df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
 
-# st.table(df)
+st.write("## Target Frequency ")
+st.table(df)
 
 ################################################################
 # Initial value
