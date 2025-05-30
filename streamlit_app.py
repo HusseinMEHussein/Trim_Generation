@@ -17,7 +17,6 @@ ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_
 st.title("MF Table Generator")
 st.write("version 1.0.0")
 st.write("@Hussein Hussein 2025")
-st.image("Hussein Hussein_Headshot_1.png", caption="Sunrise by the mountains")
 
 
 st.write("## Enter Frequency Info:")
