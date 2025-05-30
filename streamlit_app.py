@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 
-# st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
 # Target values
 ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_Freqx1 vector
@@ -17,11 +17,13 @@ ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_
 st.title("MF Table Generator")
 st.write("version 1.0.0")
 st.write("@Hussein Hussein 2025")
+st.image("Hussein Hussein_Headshot_1.png", caption="Sunrise by the mountains")
+
 
 st.write("## Enter Frequency Info:")
 
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 N_Freq = col1.number_input(
     label=" No. Frequencies (e.g. F1, F2, ...etc)",
     min_value=1 ,
@@ -29,12 +31,18 @@ N_Freq = col1.number_input(
 )
 
 N_TF = col2.number_input(
-    label="No. TF groups (e.g. TF1, TF2, ...)",
+    label="No. TF groups (e.g. TF1, TF2, ... etc)",
     min_value=1 ,
     value=6
 )
 
 N_MF = N_TF - 1
+
+max_shunt_fs = col3.number_input(
+    label="Max shunt fs (i.e. the largest fs of all the shunt resonators)",
+    min_value=1 ,
+    value=2400
+)
 
 
 
@@ -84,9 +92,12 @@ x0 = ytarget[0]
 
 # Fixed first modifier value
 
+# max_shunt_fs = 2400
+# max_shunt_fs = 2374
+
 # Separate ytarget into two groups: 24xx and 23xx
-group1 = [y for y in ytarget if y >= 2400]
-group2 = [y for y in ytarget if y < 2400]
+group1 = [y for y in ytarget if y > max_shunt_fs]
+group2 = [y for y in ytarget if y <= max_shunt_fs]
 
 # Ensure both groups are non-empty
 if not group1 or not group2:
