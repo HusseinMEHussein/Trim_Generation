@@ -202,7 +202,7 @@ yfinal = yfinal.reshape(-1, 1)
 table = np.hstack((ytarget, yfinal, A_dot_M_Matrix))
 
 # Create a DataFrame with headers
-headers = ['Target'] + ['final'] + [f'MF {i+1}' for i in range(A_matrix.shape[1])]
+headers = ['Target'] + ['Final'] + [f'MF {i+1}' for i in range(A_matrix.shape[1])]
 df = pd.DataFrame(table, columns=headers)
 
 
