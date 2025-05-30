@@ -26,12 +26,13 @@ N_Freq = col1.number_input(
     value=8
 )
 
-N_MF = col2.number_input(
+N_TF = col2.number_input(
     label="No. TF groups (e.g. TF1, TF2, ...)",
     min_value=1 ,
     value=6
 )
 
+N_MF = N_TF - 1
 st.write("## Enter Frequency Values")
 
 default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
