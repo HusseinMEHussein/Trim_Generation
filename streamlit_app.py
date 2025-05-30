@@ -16,31 +16,53 @@ st.title("MF Table Generator")
 st.write("version 1.0.0")
 st.write("@Hussein Hussein 2025")
 
-st.write("## Input TF Data")
-col1, = st.columns(1)
+st.write("## Enter Frequency Info:")
 
 
-default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0]
+col1, col2 = st.columns(2)
+N_Freq = col1.number_input(
+    label=" No. Frequencies (e.g. F1, F2, ...etc)",
+    min_value=1 ,
+    value=8
+)
 
-with col1:
-    for i, default in enumerate(default_TF_List, start=1):
-        label_col, input_col = st.columns([0.2, 0.2], vertical_alignment="center", border=True) # Adjust ratio as needed
-        label_col.markdown(f"**TF{i} Value:**")
-        globals()[f"TF{i}"] = input_col.number_input(
-            label="",
-            min_value=0 if i == 9 else 2000,
-            value=default,
-            label_visibility="collapsed" # hides the label space
-        )
+N_MF = col2.number_input(
+    label="No. TF groups (e.g. TF1, TF2, ...)",
+    min_value=1 ,
+    value=6
+)
+
+st.write("## Enter Frequency Values")
+
+default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
 
 
-st.write("## Target Frequency")
+TF_values = []
+labels = []
 
-ytarget = np.array([ TF1, TF2, TF3, TF4, TF5, TF6, TF7, TF8])
-labels = ["TF1", "TF2", "TF3", "TF4", "TF5", "TF6", "TF7", "TF8"]
-df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
 
-st.table(df)
+for i in range(1, N_Freq + 1):
+    label_col, input_col = st.columns([0.2, 0.2],
+                                        vertical_alignment="center",
+                                            border=True) # Adjust ratio as needed
+    label_col.markdown(f"**TF{i} Value:**")
+
+    temp_value = input_col.number_input(
+        label="",
+        min_value=0 ,
+        value=default_TF_List[i-1],
+        label_visibility="collapsed" # hides the label space
+    ) # to define many TF variables without repeating code lines
+
+    TF_values.append(temp_value)
+    labels.append(f"TF{i}")
+
+# st.write("## Target Frequency")
+
+# ytarget = np.array(TF_values)
+# df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
+
+# st.table(df)
 
 ################################################################
 # Initial value
@@ -78,7 +100,7 @@ M_lowBound = -110
 M_upBound = -1
 
 N_indep_Freq = len(ytarget)
-N_MF = 6
+
 
 # Variables
 A = [[pulp.LpVariable(f"A_{i}_{j}", cat="Binary") for j in range(N_MF)] for i in range(N_indep_Freq)]
@@ -119,6 +141,8 @@ prob.solve()
 print("Solver status:", pulp.LpStatus[prob.status])
 
 
+
+
 # Print A matrix
 A_values = [[int(A[i][j].varValue) for j in range(N_MF)] for i in range(N_indep_Freq)]
 print("Computed A matrix:\n", np.array(A_values))
@@ -139,14 +163,17 @@ errors = [int(ytarget[i] - yfinal[i]) for i in range(N_indep_Freq)]
 print("Errors (ytarget - yfinal):", errors)
 
 
+if all(e == 0 for e in errors):
+    st.success('feasible solution found!', icon="✅")
+else:
+    st.error('**No feasible solution found!**', icon="🚨")
 
 
 # Convert to NumPy arrays
 A_matrix = np.array(A_values)
 M_vector = np.array(M_values)
 
-
-
+yfinal = np.array(yfinal)
 
 # Multiply A by M
 # A_dot_M_Matrix = np.dot(A_matrix, M_matrix)
@@ -160,12 +187,13 @@ A_dot_M_Matrix = A_matrix * M_vector
 
 # Reshape ytarget to be a column vector (N_indep_Freqx1)
 ytarget = ytarget.reshape(-1, 1)
+yfinal = yfinal.reshape(-1, 1)
 
 # Concatenate the vector and matrix A
-table = np.hstack((ytarget, A_dot_M_Matrix))
+table = np.hstack((ytarget, yfinal, A_dot_M_Matrix))
 
 # Create a DataFrame with headers
-headers = ['Target'] + [f'MF {i+1}' for i in range(A_matrix.shape[1])]
+headers = ['Target'] + ['final'] + [f'MF {i+1}' for i in range(A_matrix.shape[1])]
 df = pd.DataFrame(table, columns=headers)
 
 
