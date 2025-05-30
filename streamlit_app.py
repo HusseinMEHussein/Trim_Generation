@@ -11,7 +11,12 @@ ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_
 
 # ytarget = np.array([2482, 2472, 2444, 2375, 2358, 2336, 2310])  # N_indep_Freqx1 vector %KB161
 
-st.write("# Input TF Data")
+
+st.title("MF Table Generator")
+st.write("version 1.0.0")
+st.write("@Hussein Hussein 2025")
+
+st.write("## Input TF Data")
 col1, = st.columns(1)
 
 
