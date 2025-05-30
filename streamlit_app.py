@@ -5,6 +5,8 @@ import pandas as pd
 import streamlit as st
 
 
+st.set_page_config(layout="wide")
+
 # Target values
 ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_Freqx1 vector
 # ytarget = np.array([2482, 2466, 2448, 2437, 2374, 2356, 2335, 2310])  # N_indep_Freqx1 vector KB233
@@ -33,7 +35,8 @@ N_TF = col2.number_input(
 )
 
 N_MF = N_TF - 1
-st.write("## Enter Frequency Values")
+
+
 
 default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
 
@@ -42,29 +45,37 @@ TF_values = []
 labels = []
 
 
-for i in range(1, N_Freq + 1):
-    label_col, input_col = st.columns([0.2, 0.2],
-                                        vertical_alignment="center",
-                                            border=True) # Adjust ratio as needed
-    label_col.markdown(f"**F{i} Value:**")
 
-    temp_value = input_col.number_input(
-        label="",
-        min_value=0 ,
-        value=default_TF_List[i-1],
-        # key=f"TF_input_{i}",# Unique key for each input
-        label_visibility="collapsed" # hides the label space
-    ) # to define many TF variables without repeating code lines
+# Display side by side
+Main_col1, Main_col2, Main_col3, Main_col4, Main_col5 = st.columns([0.2,0.1, 0.1,0.1,0.4])
 
-    TF_values.append(temp_value)
-    labels.append(f"TF{i}")
+with Main_col1:
+    st.write("## Enter Frequency Values")
+
+    for i in range(1, N_Freq + 1):
+        label_col, input_col = st.columns([0.2, 0.2],
+                                            vertical_alignment="center",
+                                                border=True) # Adjust ratio as needed
+        label_col.markdown(f"**F{i} Value:**")
+
+        temp_value = input_col.number_input(
+            label="",
+            min_value=0 ,
+            value=default_TF_List[i-1],
+            # key=f"TF_input_{i}",# Unique key for each input
+            label_visibility="collapsed" # hides the label space
+        ) # to define many TF variables without repeating code lines
+
+        TF_values.append(temp_value)
+        labels.append(f"TF{i}")
 
 
 ytarget = np.array(TF_values)
-df = pd.DataFrame({"Target Frequency": labels, "Value (MHz)": ytarget})
+df = pd.DataFrame({" Target Frequency": labels, "Value (MHz)": ytarget})
 
-st.write("## Target Frequency ")
-st.table(df)
+with Main_col3:
+    st.write("### Entered Target Frequency ")
+    st.table(df)
 
 ################################################################
 # Initial value
@@ -165,10 +176,6 @@ errors = [int(ytarget[i] - yfinal[i]) for i in range(N_indep_Freq)]
 print("Errors (ytarget - yfinal):", errors)
 
 
-if all(e == 0 for e in errors):
-    st.success('feasible solution found!', icon="✅")
-else:
-    st.error('**No feasible solution found!**', icon="🚨")
 
 
 # Convert to NumPy arrays
@@ -210,8 +217,15 @@ print_multiple_separator_lines('#', 60, 3)
 print(df)
 print_multiple_separator_lines('#', 60, 3)
 
-st.write("# Generated MF Table")
-st.table(styled_df)
+
+with Main_col5:
+    if all(e == 0 for e in errors):
+        st.success('feasible solution found!', icon="✅")
+    else:
+        st.error('**No feasible solution found!**', icon="🚨")
+
+    st.write("# Generated MF Table")
+    st.table(styled_df)
 
 
 
