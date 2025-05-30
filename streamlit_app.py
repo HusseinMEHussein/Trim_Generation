@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 
 
-# st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
 # Target values
 # ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_Freqx1 vector
