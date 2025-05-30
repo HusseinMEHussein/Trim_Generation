@@ -4,10 +4,11 @@ import pandas as pd
 
 import streamlit as st
 
-# final
+
 
 st.set_page_config(layout="wide")
 
+# st.image("Hussein Hussein_Headshot_1.png", width=100,  caption="Sunrise by the mountains")
 # Target values
 # ytarget = np.array([2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310])  # N_indep_Freqx1 vector
 # ytarget = np.array([2482, 2466, 2448, 2437, 2374, 2356, 2335, 2310])  # N_indep_Freqx1 vector KB233
@@ -15,7 +16,7 @@ st.set_page_config(layout="wide")
 # ytarget = np.array([2482, 2472, 2444, 2375, 2358, 2336, 2310])  # N_indep_Freqx1 vector %KB161
 
 
-st.title("MF Table Generator")
+st.title("MF Table Generator 11 ")
 st.write("version 1.0.0")
 st.write("@Hussein Hussein 2025")
 
