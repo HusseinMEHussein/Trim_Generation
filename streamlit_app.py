@@ -24,10 +24,10 @@ st.write("version 1.0.0")
 st.write("© 2025 Hussein Hussein @ Skyworks Solutions")
 
 
+suggest_MF_upper_limit = 0
 
 
-
-col1top, col2top = st.columns([0.6,0.3])
+col1top, col2top = st.columns([0.6,0.4])
 
 with col1top:
     st.write("## Enter Frequency Info:")
@@ -60,18 +60,22 @@ with col1top:
 with col2top:
     st.write("### Advanced settings:")
 
-    advcol1, advcol2 = st.columns(2)
-    MF1_uppler_limit = advcol1.number_input(
-        label="MF upper limit",
-        max_value=-1 ,
-        value=-110,
-        help="i.e. the absolute max value of any given MF"
-    )
+    advcol1, spacer1, advcol2, spacer2 = st.columns([0.4,0.01,0.4,0.01])
 
+    with advcol1:
+        MF1_uppler_limit = advcol1.number_input(
+            label="MF upper limit",
+            max_value=-1 ,
+            value=-110,
+            help="i.e. the absolute max value of any given MF"
+        )
+        
+    with advcol2:
+        advcol2.write("All shunts share MF1?")
 
-    toggle_MF1_shared = st.toggle("All shunts share MF1?",
-                                   value=True, 
-                                   help="Turn this on to force all the shunt resonators to have the same MF1")
+        toggle_MF1_shared = st.toggle("",
+                                    value=True, 
+                                    help="Turn this on to force all the shunt resonators to have the same MF1")
 
 
 default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
@@ -135,8 +139,13 @@ if not group_series_reonsators or not group_shunt_reonsators:
 # Calculate M1 as the difference between the largest of each group
 M1 = max(group_shunt_reonsators) - max(group_series_reonsators)
 
+suggest_MF_upper_limit = M1
 
-
+with advcol1:
+    st.markdown(f"""
+    **Suggested MF upper limit = {suggest_MF_upper_limit}**
+    <span title="This value is calculated as: (largest shunt fs - largest series fs)" style="cursor: help;"> ℹ️</span>
+    """, unsafe_allow_html=True)
 
 
 def print_multiple_separator_lines(char, length, lines):
