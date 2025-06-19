@@ -68,6 +68,12 @@ with col2top:
         help="i.e. the absolute max value of any given MF"
     )
 
+
+    toggle_MF1_shared = st.toggle("All shunts share MF1?",
+                                   value=True, 
+                                   help="Turn this on to force all the shunt resonators to have the same MF1")
+
+
 default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
 
 
@@ -77,7 +83,7 @@ labels = []
 
 
 # Display side by side
-Main_col1, spacer1, Main_col3, spacer2, Main_col5 = st.columns([0.2,0.1, 0.1,0.1,0.4])
+Main_col1, spacer1, Main_col2, spacer2, Main_col3 = st.columns([0.2,0.1, 0.1,0.1,0.4])
 
 with Main_col1:
     st.write("## Enter Frequency Values")
@@ -104,7 +110,7 @@ ytarget = np.array(TF_values)
 df = pd.DataFrame({" Target Frequency": labels, "Value (MHz)": ytarget})
 df.index = range(1, len(df) + 1) # adds "1" to the table index to make it start from 1 instead of 0
 
-with Main_col3:
+with Main_col2:
     st.write("### Entered Target Frequency ")
     st.table(df)
 
@@ -119,15 +125,15 @@ x0 = ytarget[0]
 # max_shunt_fs = 2374
 
 # Separate ytarget into two groups: 24xx and 23xx
-group1 = [y for y in ytarget if y > max_shunt_fs]
-group2 = [y for y in ytarget if y <= max_shunt_fs]
+group_series_reonsators = [y for y in ytarget if y > max_shunt_fs]
+group_shunt_reonsators = [y for y in ytarget if y <= max_shunt_fs]
 
 # Ensure both groups are non-empty
-if not group1 or not group2:
+if not group_series_reonsators or not group_shunt_reonsators:
     raise ValueError("ytarget must contain both series and shunt values.")
 
 # Calculate M1 as the difference between the largest of each group
-M1 = max(group2) - max(group1)
+M1 = max(group_shunt_reonsators) - max(group_series_reonsators)
 
 
 
@@ -154,6 +160,7 @@ A = [[pulp.LpVariable(f"A_{i}_{j}", cat="Binary") for j in range(N_MF)] for i in
 M = [pulp.LpVariable(f"M_{j}", lowBound=M_lowBound, upBound=M_upBound, cat="Integer") for j in range(N_MF)]
 AM = [[pulp.LpVariable(f"AM_{i}_{j}", lowBound=M_lowBound, upBound=0, cat="Integer") for j in range(N_MF)] for i in range(N_indep_Freq)]
 
+st.write(M[0])
 # Fix M[0]
 prob += (M[0] == M1)
 
@@ -164,6 +171,18 @@ for i in range(N_indep_Freq):
 # Force first row of A to be zero
 for j in range(N_MF):
     prob += (A[0][j] == 0)
+
+
+### Optional Feature:
+
+
+if toggle_MF1_shared:
+    # Force first column of A for the shunt resonator target to be 1
+    for i in range(N_indep_Freq):
+        if ytarget[i] <= max(group_shunt_reonsators):
+            prob += (A[i][0] == 1)
+
+
 
 # Big-M constraints to enforce AM[i][j] = A[i][j] * M[j]
 M_min, M_max = M_lowBound, M_upBound
@@ -252,7 +271,7 @@ print(df)
 print_multiple_separator_lines('#', 60, 3)
 
 
-with Main_col5:
+with Main_col3:
     if all(e == 0 for e in errors):
         st.success('feasible solution found!', icon="✅")
     else:
