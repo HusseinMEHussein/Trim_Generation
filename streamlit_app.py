@@ -24,31 +24,49 @@ st.write("version 1.0.0")
 st.write("© 2025 Hussein Hussein @ Skyworks Solutions")
 
 
-st.write("## Enter Frequency Info:")
 
 
-col1, col2, col3 = st.columns(3)
-N_Freq = col1.number_input(
-    label=" No. Frequencies (e.g. F1, F2, ...etc)",
-    min_value=1 ,
-    value=8
-)
 
-N_TF = col2.number_input(
-    label="No. TF groups (e.g. TF1, TF2, ... etc)",
-    min_value=1 ,
-    value=6
-)
+col1top, col2top = st.columns([0.6,0.3])
 
-N_MF = N_TF - 1
+with col1top:
+    st.write("## Enter Frequency Info:")
 
-max_shunt_fs = col3.number_input(
-    label="Max shunt fs (i.e. the largest fs of all the shunt resonators)",
-    min_value=1 ,
-    value=2400
-)
+    col1, col2, col3, spacer1 = st.columns([0.1,0.1,0.1, 0.10])
+    N_Freq = col1.number_input(
+        label=" No. Frequencies",
+        min_value=1 ,
+        value=8,
+        help="e.g. F1, F2, ...etc"
+    )
+
+    N_TF = col2.number_input(
+        label="No. TF groups ",
+        min_value=1 ,
+        value=6,
+        help="e.g. TF1, TF2, ...etc"
+    )
+
+    N_MF = N_TF - 1
+
+    max_shunt_fs = col3.number_input(
+        label="Max shunt fs",
+        min_value=1 ,
+        value=2374,
+        help="i.e. the largest fs of all the shunt resonators"
+    )
 
 
+with col2top:
+    st.write("### Advanced settings:")
+
+    advcol1, advcol2 = st.columns(2)
+    MF1_uppler_limit = advcol1.number_input(
+        label="MF upper limit",
+        max_value=-1 ,
+        value=-110,
+        help="i.e. the absolute max value of any given MF"
+    )
 
 default_TF_List = [2482, 2466, 2448, 2436, 2374, 2356, 2338, 2310, 0, 0 ]
 
@@ -59,7 +77,7 @@ labels = []
 
 
 # Display side by side
-Main_col1, Main_col2, Main_col3, Main_col4, Main_col5 = st.columns([0.2,0.1, 0.1,0.1,0.4])
+Main_col1, spacer1, Main_col3, spacer2, Main_col5 = st.columns([0.2,0.1, 0.1,0.1,0.4])
 
 with Main_col1:
     st.write("## Enter Frequency Values")
@@ -84,6 +102,7 @@ with Main_col1:
 
 ytarget = np.array(TF_values)
 df = pd.DataFrame({" Target Frequency": labels, "Value (MHz)": ytarget})
+df.index = range(1, len(df) + 1) # adds "1" to the table index to make it start from 1 instead of 0
 
 with Main_col3:
     st.write("### Entered Target Frequency ")
@@ -105,7 +124,7 @@ group2 = [y for y in ytarget if y <= max_shunt_fs]
 
 # Ensure both groups are non-empty
 if not group1 or not group2:
-    raise ValueError("ytarget must contain both 24xx and 23xx values.")
+    raise ValueError("ytarget must contain both series and shunt values.")
 
 # Calculate M1 as the difference between the largest of each group
 M1 = max(group2) - max(group1)
@@ -123,8 +142,8 @@ def print_multiple_separator_lines(char, length, lines):
 # Define the problem as a minimization (we'll minimize number of modifiers used)
 prob = pulp.LpProblem("Minimize_Modifier_Usage", pulp.LpMinimize)
 
-M_lowBound = min(ytarget)-max(ytarget)
-M_lowBound = -110
+M_lowBound = max_shunt_fs-max(ytarget)
+M_lowBound = MF1_uppler_limit
 M_upBound = -1
 
 N_indep_Freq = len(ytarget)
@@ -219,7 +238,7 @@ table = np.hstack((ytarget, yfinal, A_dot_M_Matrix))
 # Create a DataFrame with headers
 headers = ['Target'] + ['Final'] + [f'MF {i+1}' for i in range(A_matrix.shape[1])]
 df = pd.DataFrame(table, columns=headers)
-
+df.index = range(1, len(df) + 1) # adds "1" to the table index to make it start from 1 instead of 0
 
 # Style the header: bold + navy blue
 styled_df = df.style.set_table_styles([{'selector': 'th', 'props': [('font-weight', 'bold'), ('color', 'navy')]}
@@ -241,6 +260,11 @@ with Main_col5:
 
     st.write("# Generated MF Table")
     st.table(styled_df)
+
+
+
+
+st.image("skyworks-solutions-inc-vector-logo.svg", width=200,  caption="")
 
 
 
