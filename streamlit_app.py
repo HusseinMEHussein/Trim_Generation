@@ -160,7 +160,7 @@ A = [[pulp.LpVariable(f"A_{i}_{j}", cat="Binary") for j in range(N_MF)] for i in
 M = [pulp.LpVariable(f"M_{j}", lowBound=M_lowBound, upBound=M_upBound, cat="Integer") for j in range(N_MF)]
 AM = [[pulp.LpVariable(f"AM_{i}_{j}", lowBound=M_lowBound, upBound=0, cat="Integer") for j in range(N_MF)] for i in range(N_indep_Freq)]
 
-st.write(M[0])
+
 # Fix M[0]
 prob += (M[0] == M1)
 
