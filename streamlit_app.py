@@ -24,6 +24,13 @@ st.write("version 1.0.0")
 st.write("© 2025 Hussein Hussein @ Skyworks Solutions")
 
 
+text = "Please note that NPI approval is still needed!"
+highlight_color =  "#ffff00"
+
+highlighted_text = f"<span style='background-color:{highlight_color};'>{text}</span>"
+st.markdown(highlighted_text, unsafe_allow_html=True)
+
+
 suggest_MF_upper_limit = 0
 
 
