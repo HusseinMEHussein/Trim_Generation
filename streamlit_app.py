@@ -8,7 +8,7 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
-# st.image("Hussein Hussein_Headshot_1.png", width=200,  caption="Sunrise by the mountains")
+# st.image("data\Hussein Hussein_Headshot_1.png", width=200,  caption="Sunrise by the mountains")
 
 
 st.link_button("@ Hussein Hussein", "https://www.linkedin.com/in/husseinmehussein/")
@@ -299,7 +299,7 @@ with Main_col3:
 
 
 
-st.image("skyworks-solutions-inc-vector-logo.svg", width=200,  caption="")
+st.image("data\skyworks-solutions-inc-vector-logo.svg", width=200,  caption="")
 
 
 

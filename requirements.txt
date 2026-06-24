@@ -1,3 +1,7 @@
+# requirements.txt
+# pip install -r requirements.txt
+# Required Python packages to run the app on Streamlit Cloud or locally
+
 streamlit
 pulp
 numpy
